@@ -1,0 +1,11 @@
+[req]
+distinguished_name = req_distinguished_name
+prompt = no
+
+[req_distinguished_name]
+C = ${DOMAIN_C}
+ST = ${DOMAIN_ST}
+L = ${DOMAIN_L}
+O = ${DOMAIN_O}
+OU = ${DOMAIN_OU}
+CN = ${DOMAIN_N}
