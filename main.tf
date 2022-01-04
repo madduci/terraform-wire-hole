@@ -33,6 +33,8 @@ module "nginx" {
   domain_organisation      = var.domain_organisation
   domain_organisation_unit = var.domain_organisation_unit
   domain_common_name       = var.domain_common_name
+  remote_user              = var.remote_user
+  remote_folder            = var.remote_folder
   # Assign a fixed IPv4 Address on Public Network
   public_address = var.external_addresses["nginx"]
   # Define the name of the Public Network (created at root project level)

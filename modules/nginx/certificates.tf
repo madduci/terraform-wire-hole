@@ -14,3 +14,28 @@ resource "null_resource" "nginx_certs" {
     }
   }
 }
+
+resource "null_resource" "generated_certs" {
+
+  connection {    
+    type     = "ssh"   
+    user     = var.ssh_user 
+    private_key = "${file(var.ssh_private_key)}"    
+    host     = var.ssh_host 
+    port = var.ssh_port
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "mkdir -p /home/${var.ssh_user}/${var.destination_folder}/nginx"
+    ]
+  }
+
+  provisioner "file" {
+    source = "${abspath(path.module)}/config"
+    destination = "/home/${var.ssh_user}/${var.destination_folder}/nginx/"    
+  }
+
+  depends_on = [ null_resource.nginx_certs ]
+  count = var.ssh_user != "" && var.destination_folder != "" ? 1 : 0
+}

@@ -50,6 +50,18 @@ variable "time_zone" {
   }
 }
 
+variable "remote_user" {
+  type        = string
+  description = "The remote user name"
+  default     = ""
+}
+
+variable "remote_folder" {
+  type        = string
+  description = "The remote folder where to store the configuration files"
+  default     = ""
+}
+
 variable "domain_name" {
   type        = string
   description = "The domain name used for the configuration"

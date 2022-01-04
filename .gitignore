@@ -1,6 +1,6 @@
 .terraform/
 *.tfstate*
-local.tfvars
+*.tfvars
 *.lock*
 *.pem
 *.csr
@@ -9,3 +9,4 @@ modules/pihole/pihole
 modules/wireguard/config
 modules/noip/config/
 **/server_cert.conf
+!settings.tfvars

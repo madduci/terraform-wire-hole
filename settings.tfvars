@@ -8,6 +8,8 @@ docker_public_network_name  = "public_network"
 docker_service_network_name = "service_network"
 time_zone                   = "Europe/Berlin"
 domain_name                 = "YOUR_DOMAIN"
+remote_user                 = ""
+remote_folder               = ""
 
 #################################
 # nginx Settings

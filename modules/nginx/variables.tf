@@ -133,6 +133,36 @@ variable "service_address" {
   }
 }
 
+variable "ssh_user" {
+  type = string
+  description = "The SSH user name"
+  default = ""
+}
+
+variable "ssh_port" {
+  type = string
+  description = "The SSH port"
+  default = "22"
+}
+
+variable "ssh_private_key" {
+  type = string
+  description = "The SSH private key"
+  default = ""
+}
+
+variable "ssh_host" {
+  type = string
+  description = "The SSH host"
+  default = ""
+}
+
+variable "destination_folder" {
+  type = string
+  description = "The remote folder where to store the configuration files"
+  default = ""
+}
+
 # Define local variables to be used for mountpoints
 locals {
   nginx_default_conf    = "${abspath(path.module)}/config/templates/default.conf"
