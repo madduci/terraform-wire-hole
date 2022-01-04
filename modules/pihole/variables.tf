@@ -52,7 +52,7 @@ variable "pihole_service_address" {
   type        = string
   description = "The IPv4 Address of the PiHole service, facing the service network"
   validation {
-    condition     = length(var.pihole_service_address) > 4
+    condition     = can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.pihole_service_address))
     error_message = "The pihole_service_address value must be a defined."
   }
 }
@@ -61,7 +61,7 @@ variable "cloudflared_service_address" {
   type        = string
   description = "The IPv4 Address of the CloudFlared service, facing the service network"
   validation {
-    condition     = length(var.cloudflared_service_address) > 4
+    condition     = can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.cloudflared_service_address))
     error_message = "The cloudflared_service_address value must be a defined."
   }
 }

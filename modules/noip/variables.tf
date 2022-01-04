@@ -42,7 +42,7 @@ variable "public_address" {
   type        = string
   description = "The IPv4 Address of the service, facing the public network"
   validation {
-    condition     = length(var.public_address) > 4
+    condition     = can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.public_address))
     error_message = "The public_address value must be a defined."
   }
 }

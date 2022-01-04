@@ -267,7 +267,7 @@ variable "wireguard_peersdns" {
   default     = "8.8.8.8"
 
   validation {
-    condition     = length(var.wireguard_peersdns) > 0
+    condition     = can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.wireguard_peersdns))
     error_message = "Invalid wireguard_peersdns specified."
   }
 }
@@ -278,7 +278,7 @@ variable "wireguard_subnet" {
   default     = "10.13.13.0"
 
   validation {
-    condition     = length(var.wireguard_subnet) > 0
+    condition     = can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.wireguard_subnet))
     error_message = "Invalid wireguard_subnet specified."
   }
 }
