@@ -81,3 +81,22 @@ output "pihole_service_address" {
   value       = module.pihole.pihole_service_address
   description = "The IPv4 Address (internal)"
 }
+
+###################################
+# General Output information
+###################################
+
+output "architecture" {
+  value       = var.architecture
+  description = "The target architecture"
+}
+
+output "docker_host" {
+  value       = var.docker_host
+  description = "The target docker host"
+}
+
+output "pihole_reminder" {
+  value       = "Remember to run 'docker exec -it pihole pihole -a -p' to set your password."
+  description = "Reminder to change PiHole password"
+}
