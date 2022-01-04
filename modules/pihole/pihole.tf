@@ -1,7 +1,7 @@
 # Find the latest image
 
 data "docker_registry_image" "pihole" {
-  name = "pihole/pihole:latest"
+  name = var.pihole_image_name
 }
 
 # Updates the image dynamically
@@ -10,29 +10,26 @@ resource "docker_image" "pihole" {
   name          = data.docker_registry_image.pihole.name
   pull_triggers = [data.docker_registry_image.pihole.sha256_digest]
   keep_locally  = true
-}
-
-# Define the mountpoints as variable 
-
-locals {
-  pihole_config_dir  = "/infrastructure/pihole/etc-pihole"
-  pihole_dnsmasq_dir = "/infrastructure/pihole/etc-dnsmasq.d"
-  pihole_log_file    = "/dev/null"
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # Start the docker container
 
 resource "docker_container" "pihole" {
-  name       = "pihole"
-  image      = docker_image.pihole.latest
-  hostname   = "pihole"
-  restart    = "always"
-  dns        = ["127.0.0.1"]
-  depends_on = [docker_container.cloudflared]
+  name     = "pihole"
+  image    = docker_image.pihole.latest
+  hostname = "pihole" 
+  restart  = "always"
+  dns      = ["127.0.0.1"]
+  depends_on = [
+    docker_container.cloudflared
+  ]
   env = [
-    "TZ=${var.TIME_ZONE}",
-    "DNS1=10.0.0.10#5054",
-    "DNS2=10.0.0.10#5054",
+    "TZ=${var.time_zone}",
+    "DNS1=${var.cloudflared_service_address}#5054",
+    "DNS2=${var.cloudflared_service_address}#5054",
     "IPv6=false",
     "DNSMASQ_LISTENING=all",
     "PIHOLELOG=/dev/null"
@@ -51,8 +48,8 @@ resource "docker_container" "pihole" {
     read_only      = true
   }
   networks_advanced {
-    name         = docker_network.service.name
-    ipv4_address = var.internal_adresses["pihole"]
+    name         = var.service_network
+    ipv4_address = var.pihole_service_address
   }
   ports {
     internal = 53

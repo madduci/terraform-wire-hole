@@ -1,14 +1,16 @@
 # terraform-wire-hole
 
-This is a collection of Terraform files and configurations to realize a Wireguard-PiHole system, freely editable, to achieve adblocking also for mobile devices outside a network.
+This is a collection of Terraform files and configurations to configure automatically a Wireguard-PiHole system, freely editable, to achieve adblocking also for mobile devices outside a home network.
 
-List of services:
+List of services included in this project:
 
 * Wireguard (VPN)
 * NoIP (Dynamic DNS Provider)
 * PiHole (AdBlocking)
 * CloudFlared (DNS over HTTPS)
 * NGINX (Reverse Proxy for PiHole with HTTPS endpoint)
+
+The Services are all optional. It means that you can decide what you'd like to run by commenting out the unneeded Modules in the `main.tf` file in the root folder.
 
 ## Requirements
 
@@ -18,42 +20,32 @@ A recent version of Terraform (>=0.13) is recommended, the docker service (18.06
 
 ## Run
 
-Before launching the services, a couple of things must be prepared: 
+Before invoking Terraform and setup the services, a couple of things must be prepared: 
 
-1. Define the variables "DOMAIN_NAME", "DOMAIN_STATE", "DOMAIN_LOCATION", "DOMAIN_ORGANISATION", "DOMAIN_ORGANISATION_UNIT" and "DOMAIN_COUNTRY"
-2. The TLS certificates for NGINX must be generated (script in `nginx/config/ssl/` folder)
-3. The NoIP configuration file must be generated (script in `noip/` folder)
-4. The folders nginx/, noip/, pihole/ must be copied on the target host, in the folder `/infrastructure` and the user must have read/write permissions
-5. The entrypoint file `main.tf` should be edited to set eventually a remote host, if the system has to run on it, as follows:
-
-```
-provider "docker" {
-  host = "ssh://USER@REMOTE_ADDRESS:REMOTE_PORT"
-}
-
-```
+1. Define a `tfvars` file with all the required variables
+2. The NoIP configuration file must be generated with the provided Bash Script (`noip.sh`), if you plan to use NoIP.
 
 After these changes, the system can be created as follows:
 
 ```
 terraform init
-terraform plan
-terraform apply
+terraform plan -var-file=settings.tfvars
+terraform apply -var-file=local.tfvars
 ```
 
 ## Removing the services
 
-To remove everything (networks, volumes, containers), just issue:
+To remove everything (networks, volumes, containers), you need to invoke the following command:
 
 ```
-terraform destroy
+terraform destroy -var-file=local.tfvars
 ```
 
 ## Accessing the Services
 
 Without Wireguard activated, the services are accessible within' your host IP Address (e.g. for the PiHole Dashboard, https://REMOTE_ADDRESS/pihole).
 
-With Wireguard activated, the services are accessible with the subnet 10.0.0.0/24 and the PiHole Dashboard with the IP Address 192.168.10.2 (https://192.168.10.2/pihole)
+With Wireguard activated, the PiHole Dashboard will be available at the IP Address 192.168.10.2 (https://192.168.10.2/pihole)
 
 ## Caveats / Need Improvement
 
@@ -61,10 +53,10 @@ With Wireguard activated, the services are accessible with the subnet 10.0.0.0/2
 
 `docker exec -it pihole pihole -a -p` 
 
-or extend the `pihole.tf` with the environment variable **WEBPASSWORD** and specify your password.
+or extend the `pihole.tf` file in the `modules/pihole` folder with the environment variable **WEBPASSWORD** and specify your password. Please refer to the official documentation of PiHole to configure the environment variables properly.
 
-2. Input variables can be overridden. At the moment some values contain defaults, they can be changed using [environment variables](https://www.terraform.io/docs/language/values/variables.html).
+2. Input variables can be overridden. At the moment some values contain default values, they can be changed using [environment variables](https://www.terraform.io/docs/language/values/variables.html) or [Variable Definition](https://www.terraform.io/language/values/variables#variable-definitions-tfvars-files) files.
 
-3. Update of existing services isn't working issue-free when changing some information and applying the terraform plan without destroying the previous one.
+3. Update of existing services isn't working issue-free when changing some information. It could be necessary to destroy the environment first and apply again the setup.
 
-4. Paths to be mounted in docker volumes are hardcoded to the path `/infrastructure/SERVICE_NAME/`.
+4. It's possible that some names (docker containers, docker networks, docker volumes) or IPv4 Ranges might exist or be reserved/in use on your Docker Host, therefore applying this Terraform setup might result in an error, due to name-clashes. Please edit the necessary files (`variables.tf`, `network.tf`) and adjust them according to your needs.
