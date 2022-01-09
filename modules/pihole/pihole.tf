@@ -35,11 +35,11 @@ resource "docker_container" "pihole" {
     "PIHOLELOG=/dev/null"
   ]
   volumes {
-    host_path      = local.pihole_config_dir
+    host_path      = local.pihole_etc_folder
     container_path = "/etc/pihole"
   }
   volumes {
-    host_path      = local.pihole_dnsmasq_dir
+    host_path      = local.pihole_dnsmasq_folder
     container_path = "/etc/dnsmasq.d"
   }
   volumes {
