@@ -95,3 +95,13 @@ output "target_docker_host" {
   value       = var.docker_host
   description = "The target docker host"
 }
+
+output "target_docker_public_network" {
+  value       = docker_network.public.name
+  description = "The docker public network created on the target"
+}
+
+output "target_docker_service_network" {
+  value       = docker_network.service.name
+  description = "The docker public network created on the target"
+}

@@ -15,7 +15,8 @@ resource "null_resource" "nginx_certs" {
   }
 }
 
-resource "null_resource" "generated_certs" {
+# Optionally upload certificates to the remote host, if ssh_user and destination_folder are supplied
+resource "null_resource" "remote_upload_certs" {
 
   connection {    
     type     = "ssh"   
@@ -33,7 +34,7 @@ resource "null_resource" "generated_certs" {
 
   provisioner "file" {
     source = "${abspath(path.module)}/config"
-    destination = "/home/${var.ssh_user}/${var.destination_folder}/nginx/"    
+    destination = "/home/${var.ssh_user}/${var.destination_folder}/nginx"    
   }
 
   depends_on = [ null_resource.nginx_certs ]

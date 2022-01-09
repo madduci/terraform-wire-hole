@@ -23,7 +23,7 @@ resource "docker_container" "noip" {
   hostname = "noip"
   restart  = "always"
   depends_on = [
-    null_resource.noip_config
+    null_resource.remote_upload_config
   ]
   # Environment
   env = [

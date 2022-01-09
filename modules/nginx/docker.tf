@@ -23,7 +23,7 @@ resource "docker_container" "nginx" {
   hostname = "nginx"
   restart  = "always"
   depends_on = [
-    null_resource.nginx_certs
+    null_resource.nginx_certs, null_resource.remote_upload_certs
   ]
   # Environment
   env = [

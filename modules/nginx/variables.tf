@@ -133,6 +133,8 @@ variable "service_address" {
   }
 }
 
+# if none given, upload is not performed (= local execution)
+
 variable "ssh_user" {
   type = string
   description = "The SSH user name"
@@ -149,6 +151,7 @@ variable "ssh_private_key" {
   type = string
   description = "The SSH private key"
   default = ""
+  sensitive = true
 }
 
 variable "ssh_host" {
@@ -165,10 +168,11 @@ variable "destination_folder" {
 
 # Define local variables to be used for mountpoints
 locals {
-  nginx_default_conf    = "${abspath(path.module)}/config/templates/default.conf"
-  nginx_proxy_conf      = "${abspath(path.module)}/config/templates/proxy.conf"
-  nginx_server_dhparams = "${abspath(path.module)}/config/ssl/dhparam-2048.pem"
-  nginx_server_cert     = "${abspath(path.module)}/config/ssl/certificate.pem"
-  nginx_server_key      = "${abspath(path.module)}/config/ssl/key.pem"
-  nginx_webroot_folder  = "${abspath(path.module)}/config/webroot"
+  nginx_config_folder   = var.destination_folder != "" && var.ssh_user != "" ? "/home/${var.ssh_user}/${var.destination_folder}/nginx/config" : "${abspath(path.module)}/config"
+  nginx_default_conf    = "${local.nginx_config_folder}/templates/default.conf"
+  nginx_proxy_conf      = "${local.nginx_config_folder}/templates/proxy.conf"
+  nginx_server_dhparams = "${local.nginx_config_folder}/ssl/dhparam-2048.pem"
+  nginx_server_cert     = "${local.nginx_config_folder}/ssl/certificate.pem"
+  nginx_server_key      = "${local.nginx_config_folder}/ssl/key.pem"
+  nginx_webroot_folder  = "${local.nginx_config_folder}/webroot"
 }

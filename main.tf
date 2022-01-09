@@ -33,16 +33,20 @@ module "nginx" {
   domain_organisation      = var.domain_organisation
   domain_organisation_unit = var.domain_organisation_unit
   domain_common_name       = var.domain_common_name
-  remote_user              = var.remote_user
-  remote_folder            = var.remote_folder
+  # Upload files remotely via SSH
+  ssh_host           = var.ssh_host
+  ssh_user           = var.ssh_user
+  ssh_private_key    = var.ssh_private_key
+  ssh_port           = var.ssh_port
+  destination_folder = var.destination_folder
   # Assign a fixed IPv4 Address on Public Network
   public_address = var.external_addresses["nginx"]
   # Define the name of the Public Network (created at root project level)
-  public_network = var.docker_public_network_name
+  public_network = docker_network.public.name
   # Assign a fixed IPv4 Address on Service (Private) Network
   service_address = var.internal_addresses["nginx"]
   # Define the name of the Service Network (created at root project level)
-  service_network = var.docker_service_network_name
+  service_network = docker_network.service.name
 }
 
 # Comment this out if you don't need NoIP
@@ -52,10 +56,16 @@ module "noip" {
   docker_host = var.docker_host
   image_name  = var.noip_image_name
   time_zone   = var.time_zone
+  # Upload files remotely via SSH
+  ssh_host           = var.ssh_host
+  ssh_user           = var.ssh_user
+  ssh_private_key    = var.ssh_private_key
+  ssh_port           = var.ssh_port
+  destination_folder = var.destination_folder
   # Assign a fixed IPv4 Address on Public Network
   public_address = var.external_addresses["noip"]
   # Define the name of the Public Network (created at root project level)
-  public_network = var.docker_public_network_name
+  public_network = docker_network.public.name
 }
 
 # Comment this out if you don't need PiHole
@@ -71,7 +81,7 @@ module "pihole" {
   # Assign a fixed IPv4 Address on Service (Private) Network
   pihole_service_address = var.internal_addresses["pihole"]
   # Define the name of the Service Network (created at root project level)
-  service_network = var.docker_service_network_name
+  service_network = docker_network.service.name
 }
 
 # Comment this out if you don't need WireGuard
@@ -92,10 +102,10 @@ module "wireguard" {
   # Assign a fixed IPv4 Address on Public Network
   public_address = var.external_addresses["wireguard"]
   # Define the name of the Public Network (created at root project level)
-  public_network = var.docker_public_network_name
+  public_network = docker_network.public.name
   # Assign a fixed IPv4 Address on Service (Private) Network
   service_address = var.internal_addresses["wireguard"]
   # Define the name of the Service Network (created at root project level)
-  service_network = var.docker_service_network_name
+  service_network = docker_network.service.name
 }
 

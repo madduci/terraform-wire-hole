@@ -50,13 +50,32 @@ variable "time_zone" {
   }
 }
 
-variable "remote_user" {
+variable "ssh_user" {
   type        = string
-  description = "The remote user name"
+  description = "The SSH user name"
   default     = ""
 }
 
-variable "remote_folder" {
+variable "ssh_port" {
+  type        = string
+  description = "The SSH port"
+  default     = "22"
+}
+
+variable "ssh_private_key" {
+  type        = string
+  description = "The SSH private key"
+  default     = ""
+  sensitive   = true
+}
+
+variable "ssh_host" {
+  type        = string
+  description = "The SSH host"
+  default     = ""
+}
+
+variable "destination_folder" {
   type        = string
   description = "The remote folder where to store the configuration files"
   default     = ""
