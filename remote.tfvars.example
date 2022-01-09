@@ -10,6 +10,11 @@ time_zone                   = "Europe/Berlin"
 domain_name                 = "YOUR_DOMAIN"
 remote_user                 = ""
 remote_folder               = ""
+ssh_host                    = "YOUR_REMOTE_SSH_HOST"     # example Vagrant box: 127.0.0.1
+ssh_user                    = "YOUR_REMOTE_USERNAME"     # example Vagrant box: vagrant
+ssh_private_key             = "YOUR_PRIVATE_KEY_TO_HOST" # example Vagrant box: key from `vagrant ssh-config'
+ssh_port                    = "YOUR_REMOTE_PORT"         # example Vagrant box: 2222
+destination_folder          = "YOUR_REMOTE_FOLDER"       # example Vagrant box: infrastructure (will create /home/vagrant/infrastructure)
 
 #################################
 # nginx Settings
