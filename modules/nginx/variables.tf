@@ -136,34 +136,34 @@ variable "service_address" {
 # if none given, upload is not performed (= local execution)
 
 variable "ssh_user" {
-  type = string
+  type        = string
   description = "The SSH user name"
-  default = ""
+  default     = ""
 }
 
 variable "ssh_port" {
-  type = string
+  type        = string
   description = "The SSH port"
-  default = "22"
+  default     = "22"
 }
 
 variable "ssh_private_key" {
-  type = string
+  type        = string
   description = "The SSH private key"
-  default = ""
-  sensitive = true
+  default     = ""
+  sensitive   = true
 }
 
 variable "ssh_host" {
-  type = string
+  type        = string
   description = "The SSH host"
-  default = ""
+  default     = ""
 }
 
 variable "destination_folder" {
-  type = string
+  type        = string
   description = "The remote folder where to store the configuration files"
-  default = ""
+  default     = ""
 }
 
 # Define local variables to be used for mountpoints

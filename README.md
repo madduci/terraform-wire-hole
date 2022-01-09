@@ -60,3 +60,5 @@ or extend the `pihole.tf` file in the `modules/pihole` folder with the environme
 3. Update of existing services isn't working issue-free when changing some information. It could be necessary to destroy the environment first and apply again the setup.
 
 4. It's possible that some names (docker containers, docker networks, docker volumes) or IPv4 Ranges might exist or be reserved/in use on your Docker Host, therefore applying this Terraform setup might result in an error, due to name-clashes. Please edit the necessary files (`variables.tf`, `network.tf`) and adjust them according to your needs.
+
+5. Remote configuration doesn't support nested remote destination folders. The only destination folder required for uploading files (nginx SSL certs, noip config) must be at root level, in the current SSH user folder (e.g. if the remote SSH user is 'vagrant', the folder will be created as `/home/vagrant/folder`)

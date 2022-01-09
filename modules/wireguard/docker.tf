@@ -18,10 +18,10 @@ resource "docker_image" "wireguard" {
 # Start the docker container
 
 resource "docker_container" "wireguard" {
-  image      = docker_image.wireguard.latest
-  name       = "wireguard"
-  hostname   = "wireguard"
-  restart    = "always"
+  image    = docker_image.wireguard.latest
+  name     = "wireguard"
+  hostname = "wireguard"
+  restart  = "always"
 
   # Environment
   env = [

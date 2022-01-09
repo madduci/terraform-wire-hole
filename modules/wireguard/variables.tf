@@ -86,40 +86,40 @@ variable "dns_server_address" {
 
 # Specific WireGuard settings
 variable "uid" {
-  type = string
+  type        = string
   description = "The UID to be used with Wireguard (default: 1000)"
-  default = "1000"
+  default     = "1000"
 
   validation {
     condition     = length(var.uid) > 0
     error_message = "Invalid uid specified."
-  } 
+  }
 }
 
 variable "gid" {
-  type = string
+  type        = string
   description = "The GID to be used with Wireguard (default: 1000)"
-  default = "1000"
+  default     = "1000"
 
   validation {
     condition     = length(var.gid) > 0
     error_message = "Invalid gid specified."
-  } 
+  }
 }
 
 variable "peers" {
-  type = string
+  type        = string
   description = "The maximum clients to be used with Wireguard (default: 5)"
-  default = "5"
+  default     = "5"
 
   validation {
     condition     = length(var.peers) > 0
     error_message = "Invalid number of peers specified."
-  } 
+  }
 }
 
 variable "subnet" {
-  type = string
+  type        = string
   description = "Internal subnet for the wireguard and server and peers. Defaults to 10.13.13.0."
   default     = "10.13.13.0"
 
@@ -129,9 +129,21 @@ variable "subnet" {
   }
 }
 
+variable "ssh_user" {
+  type        = string
+  description = "The SSH user name"
+  default     = ""
+}
+
+variable "destination_folder" {
+  type        = string
+  description = "The remote folder where to store the configuration files"
+  default     = ""
+}
+
 # Define local variables
 
 locals {
+  wireguard_config_folder  = var.destination_folder != "" && var.ssh_user != "" ? "/home/${var.ssh_user}/${var.destination_folder}/wireguard/config" : "${abspath(path.module)}/config"
   wireguard_modules_folder = "/lib/modules"
-  wireguard_config_folder  = "${abspath(path.module)}/config"
 }

@@ -76,6 +76,9 @@ module "pihole" {
   pihole_image_name      = var.pihole_image_name
   cloudflared_image_name = var.cloudflared_image_name
   time_zone              = var.time_zone
+  # Used to determine where to store configuration files from the docker image
+  ssh_user           = var.ssh_user
+  destination_folder = var.destination_folder
   # The Address of CloudFlared in the Service (Private) Network
   cloudflared_service_address = var.internal_addresses["cloudflared"]
   # Assign a fixed IPv4 Address on Service (Private) Network
@@ -97,6 +100,9 @@ module "wireguard" {
   uid         = var.wireguard_uid
   gid         = var.wireguard_gid
   subnet      = var.wireguard_subnet
+  # Used to determine where to store configuration files from the docker image
+  ssh_user           = var.ssh_user
+  destination_folder = var.destination_folder
   # Use PiHole as DNS Server - Comment this out if PiHole is not required
   dns_server_address = var.internal_addresses["pihole"]
   # Assign a fixed IPv4 Address on Public Network

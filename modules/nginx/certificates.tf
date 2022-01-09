@@ -18,12 +18,12 @@ resource "null_resource" "nginx_certs" {
 # Optionally upload certificates to the remote host, if ssh_user and destination_folder are supplied
 resource "null_resource" "remote_upload_certs" {
 
-  connection {    
-    type     = "ssh"   
-    user     = var.ssh_user 
-    private_key = "${file(var.ssh_private_key)}"    
-    host     = var.ssh_host 
-    port = var.ssh_port
+  connection {
+    type        = "ssh"
+    user        = var.ssh_user
+    private_key = file(var.ssh_private_key)
+    host        = var.ssh_host
+    port        = var.ssh_port
   }
 
   provisioner "remote-exec" {
@@ -33,10 +33,10 @@ resource "null_resource" "remote_upload_certs" {
   }
 
   provisioner "file" {
-    source = "${abspath(path.module)}/config"
-    destination = "/home/${var.ssh_user}/${var.destination_folder}/nginx"    
+    source      = "${abspath(path.module)}/config"
+    destination = "/home/${var.ssh_user}/${var.destination_folder}/nginx"
   }
 
-  depends_on = [ null_resource.nginx_certs ]
-  count = var.ssh_user != "" && var.destination_folder != "" ? 1 : 0
+  depends_on = [null_resource.nginx_certs]
+  count      = var.ssh_user != "" && var.destination_folder != "" ? 1 : 0
 }

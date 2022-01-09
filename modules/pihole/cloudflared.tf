@@ -16,10 +16,10 @@ resource "docker_image" "cloudflared" {
 }
 
 resource "docker_container" "cloudflared" {
-  name    = "cloudflared"
-  image   = docker_image.cloudflared.latest
+  name     = "cloudflared"
+  image    = docker_image.cloudflared.latest
   hostname = "cloudflared"
-  restart = "always"
+  restart  = "always"
   env = [
     "TZ=${var.time_zone}",
   ]

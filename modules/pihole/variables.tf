@@ -66,11 +66,23 @@ variable "cloudflared_service_address" {
   }
 }
 
+variable "ssh_user" {
+  type        = string
+  description = "The SSH user name"
+  default     = ""
+}
+
+variable "destination_folder" {
+  type        = string
+  description = "The remote folder where to store the configuration files"
+  default     = ""
+}
 
 # Define the mountpoints as variable 
 
 locals {
-  pihole_config_dir  = "${abspath(path.module)}/pihole/etc-pihole"
-  pihole_dnsmasq_dir = "${abspath(path.module)}/pihole/etc-dnsmasq.d"
-  pihole_log_file    = "/dev/null"
+  pihole_config_folder  = var.destination_folder != "" && var.ssh_user != "" ? "/home/${var.ssh_user}/${var.destination_folder}/pihole" : "${abspath(path.module)}/pihole"
+  pihole_etc_folder     = "${local.pihole_config_folder}/etc-pihole"
+  pihole_dnsmasq_folder = "${local.pihole_config_folder}/etc-dnsmasq.d"
+  pihole_log_file       = "/dev/null"
 }

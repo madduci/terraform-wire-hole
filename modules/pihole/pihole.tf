@@ -20,7 +20,7 @@ resource "docker_image" "pihole" {
 resource "docker_container" "pihole" {
   name     = "pihole"
   image    = docker_image.pihole.latest
-  hostname = "pihole" 
+  hostname = "pihole"
   restart  = "always"
   dns      = ["127.0.0.1"]
   depends_on = [
