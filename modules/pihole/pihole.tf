@@ -28,12 +28,15 @@ resource "docker_container" "pihole" {
   ]
   env = [
     "TZ=${var.time_zone}",
-    "DNS1=${var.cloudflared_service_address}#5054",
-    "DNS2=${var.cloudflared_service_address}#5054",
+    "PIHOLE_DNS_=${var.cloudflared_service_address}#5054",
+    "DNSSEC=true",
     "IPv6=false",
     "DNSMASQ_LISTENING=all",
-    "PIHOLELOG=/dev/null"
+    "PIHOLELOG=/dev/null",
+    "DNSMASQ_USER=root"
   ]
+
+  # Volumes
   volumes {
     host_path      = local.pihole_etc_folder
     container_path = "/etc/pihole"
@@ -42,15 +45,14 @@ resource "docker_container" "pihole" {
     host_path      = local.pihole_dnsmasq_folder
     container_path = "/etc/dnsmasq.d"
   }
-  volumes {
-    host_path      = local.pihole_log_file
-    container_path = "/var/log/pihole.log"
-    read_only      = true
-  }
+
+  # Network
   networks_advanced {
     name         = var.service_network
     ipv4_address = var.pihole_service_address
   }
+
+  # Ports
   ports {
     internal = 53
     external = 53
@@ -61,9 +63,13 @@ resource "docker_container" "pihole" {
     external = 53
     protocol = "udp"
   }
+
+  # Capabilities
   capabilities {
     add = ["NET_ADMIN", "NET_BIND_SERVICE"]
   }
+
+  # Healthcheck
   healthcheck {
     test         = ["CMD", "curl", "--fail", "http://localhost/"]
     interval     = "20s"

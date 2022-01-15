@@ -84,5 +84,4 @@ locals {
   pihole_config_folder  = var.destination_folder != "" && var.ssh_user != "" ? "/home/${var.ssh_user}/${var.destination_folder}/pihole" : "${abspath(path.module)}/pihole"
   pihole_etc_folder     = "${local.pihole_config_folder}/etc-pihole"
   pihole_dnsmasq_folder = "${local.pihole_config_folder}/etc-dnsmasq.d"
-  pihole_log_file       = "/dev/null"
 }
