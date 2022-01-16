@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 docker run -it --rm \
-  -v $(pwd)/config:/usr/local/etc \
+  -v $(pwd):/usr/local/etc \
   romeupalos/noip -C

@@ -1,41 +1,34 @@
-# Find the latest image
 
+
+# Define the image to be used
 data "docker_registry_image" "nginx" {
-  name = "nginx:alpine"
+  name = var.image_name
 }
 
-# Updates the image dynamically
-
+# Update the image dynamically, if the tag is the constant
 resource "docker_image" "nginx" {
   name          = data.docker_registry_image.nginx.name
   pull_triggers = [data.docker_registry_image.nginx.sha256_digest]
   keep_locally  = true
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
-# Define the mountpoints as variable 
-
-locals {
-  nginx_default_conf    = "/infrastructure/nginx/config/templates/default.conf"
-  nginx_proxy_conf      = "/infrastructure/nginx/config/templates/proxy.conf"
-  nginx_server_dhparams = "/infrastructure/nginx/config/ssl/dhparam-2048.pem"
-  nginx_server_cert     = "/infrastructure/nginx/config/ssl/certificate.pem"
-  nginx_server_key      = "/infrastructure/nginx/config/ssl/key.pem"
-  nginx_webroot_folder  = "/infrastructure/nginx/webroot"
-}
-
-# Start the docker container
+# Define the docker container
 
 resource "docker_container" "nginx" {
-  image      = docker_image.nginx.latest
-  depends_on = [docker_container.pihole]
-  name       = "nginx"
-  hostname   = "nginx"
-  restart    = "always"
-
+  image    = docker_image.nginx.latest
+  name     = "nginx"
+  hostname = "nginx"
+  restart  = "unless-stopped"
+  depends_on = [
+    null_resource.nginx_certs, null_resource.remote_upload_certs
+  ]
   # Environment
   env = [
-    "TZ=${var.TIME_ZONE}",
-    "NGINX_HOST=${var.DOMAIN_NAME}"
+    "TZ=${var.time_zone}",
+    "NGINX_HOST=${var.domain_name}"
   ]
 
   # Volumes
@@ -51,17 +44,17 @@ resource "docker_container" "nginx" {
   }
   volumes {
     host_path      = local.nginx_server_dhparams
-    container_path = "/etc/ssl/${var.DOMAIN_NAME}/dhparam-2048.pem"
+    container_path = "/etc/ssl/${var.domain_name}/dhparam-2048.pem"
     read_only      = true
   }
   volumes {
     host_path      = local.nginx_server_cert
-    container_path = "/etc/ssl/${var.DOMAIN_NAME}/certificate.pem"
+    container_path = "/etc/ssl/${var.domain_name}/certificate.pem"
     read_only      = true
   }
   volumes {
     host_path      = local.nginx_server_key
-    container_path = "/etc/ssl/${var.DOMAIN_NAME}/key.pem"
+    container_path = "/etc/ssl/${var.domain_name}/key.pem"
     read_only      = true
   }
   volumes {
@@ -72,12 +65,12 @@ resource "docker_container" "nginx" {
 
   # Network
   networks_advanced {
-    name         = docker_network.service.name
-    ipv4_address = var.internal_adresses["nginx"]
+    name         = var.service_network
+    ipv4_address = var.service_address
   }
   networks_advanced {
-    name         = docker_network.public.name
-    ipv4_address = var.external_adresses["nginx"]
+    name         = var.public_network
+    ipv4_address = var.public_address
   }
 
   # Ports

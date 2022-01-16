@@ -1,7 +1,7 @@
 # Find the latest image
 
 data "docker_registry_image" "noip" {
-  name = "romeupalos/noip:latest"
+  name = var.image_name
 }
 
 # Updates the image dynamically
@@ -10,12 +10,9 @@ resource "docker_image" "noip" {
   name          = data.docker_registry_image.noip.name
   pull_triggers = [data.docker_registry_image.noip.sha256_digest]
   keep_locally  = true
-}
-
-# Define the mountpoints as variable 
-
-locals {
-  noip_conf = "/infrastructure/noip/config/no-ip2.conf"
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # Start the docker container
@@ -24,10 +21,13 @@ resource "docker_container" "noip" {
   image    = docker_image.noip.latest
   name     = "noip"
   hostname = "noip"
-  restart  = "always"
+  restart  = "unless-stopped"
+  depends_on = [
+    null_resource.remote_upload_config
+  ]
   # Environment
   env = [
-    "TZ=${var.TIME_ZONE}",
+    "TZ=${var.time_zone}",
   ]
 
   # Volumes
@@ -38,8 +38,8 @@ resource "docker_container" "noip" {
 
   # Network
   networks_advanced {
-    name         = docker_network.public.name
-    ipv4_address = var.external_adresses["noip"]
+    name         = var.public_network
+    ipv4_address = var.public_address
   }
 
 }

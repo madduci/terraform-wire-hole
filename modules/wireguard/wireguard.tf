@@ -1,7 +1,7 @@
 # Find the latest image
 
 data "docker_registry_image" "wireguard" {
-  name = "linuxserver/wireguard:${var.ARCHITECTURE}-latest"
+  name = var.image_name
 }
 
 # Updates the image dynamically
@@ -10,34 +10,28 @@ resource "docker_image" "wireguard" {
   name          = data.docker_registry_image.wireguard.name
   pull_triggers = [data.docker_registry_image.wireguard.sha256_digest]
   keep_locally  = true
-}
-
-# Define local variables
-
-locals {
-  wireguard_peer_dns       = var.internal_adresses["pihole"]
-  wireguard_modules_folder = "/lib/modules"
-  wireguard_config_folder  = "/infrastructure/wireguard/config"
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # Start the docker container
 
 resource "docker_container" "wireguard" {
-  image      = docker_image.wireguard.latest
-  depends_on = [docker_container.nginx, docker_container.noip, docker_container.pihole]
-  name       = "wireguard"
-  hostname   = "wireguard"
-  restart    = "always"
+  image    = docker_image.wireguard.latest
+  name     = "wireguard"
+  hostname = "wireguard"
+  restart  = "unless-stopped"
 
   # Environment
   env = [
-    "TZ=${var.TIME_ZONE}",
-    "PUID=${var.WIREGUARD_UID}",
-    "GUID=${var.WIREGUARD_GID}",
-    "SERVERURL=${var.DOMAIN_NAME}",
-    "PEERS=${var.WIREGUARD_PEERS}",
-    "PEER_DNS=${local.wireguard_peer_dns}",
-    "INTERNAL_SUBNET=${var.WIREGUARD_SUBNET}"
+    "TZ=${var.time_zone}",
+    "PUID=${var.uid}",
+    "GUID=${var.gid}",
+    "SERVERURL=${var.domain_name}",
+    "PEERS=${var.peers}",
+    "PEER_DNS=${var.dns_server_address}",
+    "INTERNAL_SUBNET=${var.subnet}"
   ]
 
   # Volumes
@@ -53,12 +47,12 @@ resource "docker_container" "wireguard" {
 
   # Network
   networks_advanced {
-    name         = docker_network.service.name
-    ipv4_address = var.internal_adresses["wireguard"]
+    name         = var.service_network
+    ipv4_address = var.service_address
   }
   networks_advanced {
-    name         = docker_network.public.name
-    ipv4_address = var.external_adresses["wireguard"]
+    name         = var.public_network
+    ipv4_address = var.public_address
   }
 
   # Ports
