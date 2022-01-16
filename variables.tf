@@ -95,10 +95,10 @@ variable "internal_addresses" {
   description = "Definition of default values for the internal addresses of services"
 
   default = {
-    "nginx"       = "10.0.0.2"
-    "cloudflared" = "10.0.0.10"
-    "pihole"      = "10.0.0.11"
-    "wireguard"   = "10.0.0.20"
+    "nginx"       = "10.5.1.2"
+    "cloudflared" = "10.5.1.10"
+    "pihole"      = "10.5.1.11"
+    "wireguard"   = "10.5.1.20"
   }
 }
 
@@ -232,6 +232,13 @@ variable "cloudflared_image_name" {
   }
 }
 
+variable "pihole_admin_password" {
+  type        = string
+  description = "The PiHole Admin Password"
+  default     = ""
+  sensitive   = true
+}
+
 ######################################### 
 # WireGuard Settings
 #########################################
@@ -294,8 +301,8 @@ variable "wireguard_peers" {
 
 variable "wireguard_peersdns" {
   type        = string
-  description = "DNS server set in peer/client configs. Defaults to 8.8.8.8."
-  default     = "8.8.8.8"
+  description = "DNS server set in peer/client configs. Defaults to 1.1.1.1."
+  default     = "1.1.1.1"
 
   validation {
     condition     = can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.wireguard_peersdns))

@@ -33,7 +33,8 @@ resource "docker_container" "pihole" {
     "IPv6=false",
     "DNSMASQ_LISTENING=all",
     "PIHOLELOG=/dev/null",
-    "DNSMASQ_USER=root"
+    "DNSMASQ_USER=root",
+    var.pihole_admin_password != "" ? "WEBPASSWORD=${var.pihole_admin_password}" : "WEBPASSWORD="
   ]
 
   # Volumes

@@ -34,6 +34,8 @@ domain_common_name       = "YOUR_DOMAIN"
 
 pihole_image_name      = "pihole/pihole:latest"
 cloudflared_image_name = "visibilityspots/cloudflared:latest"
+# Comment the next line out if you want to set a specific PiHole password instead of an auto-generated one
+#pihole_admin_password  = "" 
 
 #################################
 # WireGuard Settings

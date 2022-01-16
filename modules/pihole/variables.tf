@@ -78,6 +78,13 @@ variable "destination_folder" {
   default     = ""
 }
 
+variable "pihole_admin_password" {
+  type        = string
+  description = "The PiHole Admin Password"
+  default     = ""
+  sensitive   = true
+}
+
 # Define the mountpoints as variable 
 
 locals {

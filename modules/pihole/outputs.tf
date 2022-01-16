@@ -17,3 +17,8 @@ output "cloudflared_service_address" {
   value       = var.cloudflared_service_address
   description = "The IPv4 Address (internal)"
 }
+
+output "pihole_admin_password" {
+  value       = var.pihole_admin_password == "" ? "Please run 'docker logs pihole | grep random' to obtain your password" : "Your given PiHole password"
+  description = "The PiHole WebUI Administrator Password"
+}
