@@ -21,7 +21,7 @@ resource "docker_container" "nginx" {
   image    = docker_image.nginx.latest
   name     = "nginx"
   hostname = "nginx"
-  restart  = "always"
+  restart  = "unless-stopped"
   depends_on = [
     null_resource.nginx_certs, null_resource.remote_upload_certs
   ]

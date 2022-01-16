@@ -21,7 +21,7 @@ resource "docker_container" "noip" {
   image    = docker_image.noip.latest
   name     = "noip"
   hostname = "noip"
-  restart  = "always"
+  restart  = "unless-stopped"
   depends_on = [
     null_resource.remote_upload_config
   ]

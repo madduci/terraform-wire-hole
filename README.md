@@ -45,15 +45,11 @@ terraform destroy -var-file=local.tfvars
 
 Without Wireguard activated, the services are accessible within' your host IP Address (e.g. for the PiHole Dashboard, https://REMOTE_ADDRESS/pihole).
 
-With Wireguard activated, the PiHole Dashboard will be available at the IP Address 192.168.10.2 (https://192.168.10.2/pihole)
+With Wireguard activated, the PiHole Dashboard will be available at the IP Address 192.168.10.2 (https://192.168.10.2/pihole or https://REMOTE_IP/pihole, in case of remote deployment).
 
 ## Caveats / Need Improvement
 
-1. PiHole starts with a random generated password. If you want to change it, execute the following command on the host running the service:
-
-`docker exec -it pihole pihole -a -p` 
-
-or extend the `pihole.tf` file in the `modules/pihole` folder with the environment variable **WEBPASSWORD** and specify your password. Please refer to the official documentation of PiHole to configure the environment variables properly.
+1. Images aren't updated automatically with the digest trigger, if they are kept locally after the destroy. This stictly depends on the provider.
 
 2. Input variables can be overridden. At the moment some values contain default values, they can be changed using [environment variables](https://www.terraform.io/docs/language/values/variables.html) or [Variable Definition](https://www.terraform.io/language/values/variables#variable-definitions-tfvars-files) files.
 
@@ -61,4 +57,10 @@ or extend the `pihole.tf` file in the `modules/pihole` folder with the environme
 
 4. It's possible that some names (docker containers, docker networks, docker volumes) or IPv4 Ranges might exist or be reserved/in use on your Docker Host, therefore applying this Terraform setup might result in an error, due to name-clashes. Please edit the necessary files (`variables.tf`, `network.tf`) and adjust them according to your needs.
 
-5. Remote configuration doesn't support nested remote destination folders. The only destination folder required for uploading files (nginx SSL certs, noip config) must be at root level, in the current SSH user folder (e.g. if the remote SSH user is 'vagrant', the folder will be created as `/home/vagrant/folder`)
+5. Remote configuration doesn't support nested remote destination folders. The only destination folder required for uploading files (nginx SSL certs, noip config) must be at root level, in the current SSH user folder (e.g. if the remote SSH user is 'vagrant', the folder will be created as `/home/vagrant/folder`).
+
+6. Doing changes to Docker Networks implies a full `terrarorm destroy`, since the services (the Docker Containers) are strictly depending from them.
+
+7. Uploading resources to a remote host requires a SSH Identity which isn't password protected, since the [File function](https://www.terraform.io/language/functions/file) isn't able to read password-protected files.
+
+8. If you change the docker network subnets (e.g. because of conflicts) and the assigned IP to services in the `variables.tf` file, you'll need to check that the `nginx/templates/default.conf` file has the correct PiHole IP Address stored.

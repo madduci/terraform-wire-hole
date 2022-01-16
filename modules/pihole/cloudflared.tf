@@ -19,7 +19,7 @@ resource "docker_container" "cloudflared" {
   name     = "cloudflared"
   image    = docker_image.cloudflared.latest
   hostname = "cloudflared"
-  restart  = "always"
+  restart  = "unless-stopped"
   env = [
     "TZ=${var.time_zone}",
   ]

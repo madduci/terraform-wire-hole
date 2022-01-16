@@ -21,7 +21,7 @@ resource "docker_container" "pihole" {
   name     = "pihole"
   image    = docker_image.pihole.latest
   hostname = "pihole"
-  restart  = "always"
+  restart  = "unless-stopped"
   dns      = ["127.0.0.1"]
   depends_on = [
     docker_container.cloudflared

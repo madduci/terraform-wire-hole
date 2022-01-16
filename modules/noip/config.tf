@@ -7,6 +7,7 @@ resource "null_resource" "remote_upload_config" {
     private_key = file(var.ssh_private_key)
     host        = var.ssh_host
     port        = var.ssh_port
+    agent       = true
   }
 
   provisioner "remote-exec" {

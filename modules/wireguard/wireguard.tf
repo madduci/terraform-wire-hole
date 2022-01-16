@@ -21,7 +21,7 @@ resource "docker_container" "wireguard" {
   image    = docker_image.wireguard.latest
   name     = "wireguard"
   hostname = "wireguard"
-  restart  = "always"
+  restart  = "unless-stopped"
 
   # Environment
   env = [
