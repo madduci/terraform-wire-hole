@@ -23,7 +23,7 @@ resource "docker_container" "cloudflared" {
   env = [
     "TZ=${var.time_zone}",
   ]
-  
+
   # Network
   networks_advanced {
     name         = var.service_network
